@@ -20,8 +20,8 @@
   fixMissingValues <- function (dataframe, default) {
     headings <- colnames(dataframe)
     for (heading in headings) {
-      currentColumn <-dataframe[heading] 
-      currentColumn [currentColumn ==""]<-default
+      currentColumn <- dataframe[heading] 
+      currentColumn [currentColumn == ""] <- default
       dataframe[heading] <- currentColumn
     }
     return(dataframe)
@@ -34,5 +34,23 @@
     }
     return (dataframe)
   }
+  
+  createFactors = function(data, likertScale) {
+    return (factor(data,
+           ordered = TRUE,
+           levels = likertScale))
+  }
+  
+  convertToLikert <- function(dataframe, likertScale) {
+    likertDF = data.frame(dataframe) 
+    likertDF[TRUE,] = NA
+    headings <- colnames(dataframe)
+    for (heading in headings) {
+      likertDF[heading] <- createFactors(dataframe[[heading]], likertScale)
+    }
+    return (likertDF)
+  }
+  
+  
 
 # }

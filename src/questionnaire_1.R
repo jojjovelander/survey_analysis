@@ -4,6 +4,8 @@ library(likert)
 library(dbplyr)
 library(stringi)
 source("src/utils.R")
+library(lattice)
+require(mosaic)
 
 data <- loadCSVData('data/questionnaire_1.csv')
 dataframe <- toDataFrame(data)
@@ -21,6 +23,12 @@ colHeadings = c("Ownership","Management", "Privacy_Access", "Privacy_Control",
 valuesDF <- renameColumns(valuesDF, colHeadings)
 valuesDF <- fixMissingValues(valuesDF, "5")
 valuesDF <- convertScaleToInt(valuesDF)
-print(valuesDF)
+# print(valuesDF)
+
+likertValuesDF <- convertToLikert(valuesDF, c("1", "2", "3", "4", "5"))
+likertValuesDF <- likert(likertValuesDF)
+
+summary(likertValuesDF)
+plot(likertValuesDF)
 
 
