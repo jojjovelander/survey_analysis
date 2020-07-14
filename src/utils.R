@@ -10,6 +10,33 @@
     return (data.frame(rawData))
   }
 
+  renameSpecificColumns <- function (dataframe, oldColumnHeadings, newColumnHeadings) {
+    if (length(oldColumnHeadings) != length(newColumnHeadings)) {
+      errorCondition ("Old and new heading vectors must be the same length.")
+    }
+    for (j in seq_along(oldColumnHeadings)) {
+      for (i in 1:ncol(dataframe)) {
+        if (oldColumnHeadings[j] == names(dataframe)[i]) {
+          names(dataframe)[i] <- newColumnHeadings[j] 
+          break
+        }
+      }
+    }
+    return (dataframe)
+  }
+  
+  replaceColumnData <- function (dataframe, newData) {
+    for (j in 1:ncol(newData)) {
+      for (i in 1:ncol(dataframe)) {
+        if (names(newData)[j] == names(dataframe)[i]) {
+          dataframe[i] <- newData[j]
+          break
+        }
+      }
+    }
+    return (dataframe)
+  }
+  
   renameColumns <- function (dataframe, newColumnHeadings){
     for (i in 1:ncol(dataframe)) {
       names(dataframe)[i] <- newColumnHeadings[i]  
@@ -43,6 +70,24 @@
       dataframe[heading] <- c(na.omit(as.numeric(unlist(strsplit(unlist(dataframe[heading]), "[^0-9]+")))))
     }
     return (dataframe)
+  }
+  
+  
+  
+  # convertBinaryToInt <- function (dataframe) {
+  #   headings <- colnames(dataframe)
+  #   for (heading in headings) {
+  #     if (dataframe[heading] == "Yes")
+  #     dataframe[heading] <- 1
+  #   }
+  #   return (dataframe)
+  # }
+  
+  convertDataToInt <- function (dataframe) {
+    headings <- colnames(dataframe)
+    for (heading in headings) {
+      dataframe[heading]
+    }
   }
   
   createFactors = function(data, likertScale) {
