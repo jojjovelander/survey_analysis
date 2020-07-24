@@ -10,7 +10,7 @@ require(mosaic)
 # library(xtable)
 library(gmodels)
 library(ca)
-# library(FSA)
+
 
 data <- loadCSVData('data/questionnaire_1.csv')
 dataframe <- toDataFrame(data)
@@ -53,20 +53,21 @@ write.csv(allDataUnisDF, "data/newDFAllData.csv")
 table(allDataUnisDF$University, allDataUnisDF$Read_TC)
 
 contingencyUni_TandC <- xtabs(~allDataUnisDF$University + allDataUnisDF$Read_TC, data= allDataUnisDF)
-xtabs(~allDataUnisDF$University + allDataUnisDF$Read_TC, data= allDataUnisDF)
+print(contingencyUni_TandC)
+
+summary(contingencyUni_TandC)
+crosstable_Uni_TC <- CrossTable(allDataUnisDF$University, allDataUnisDF$Read_TC, expected = TRUE, prop.t=TRUE, prop.r=TRUE, prop.c=TRUE)
+
+contingencyUni_Give_Consent <- xtabs(~allDataUnisDF$University + allDataUnisDF$Give_consent, data= allDataUnisDF)
+xtabs(~allDataUnisDF$University + allDataUnisDF$Give_consent, data= allDataUnisDF)
 # contingencyUni_TandCDF <- as.data.frame.matrix(contingencyUni_TandC)
 # summary(contingencyUni_TandC)
-crosstable_Uni_TC <- CrossTable(allDataUnisDF$University, allDataUnisDF$Read_TC, expected = TRUE, prop.t=TRUE, prop.r=TRUE, prop.c=TRUE)
+crosstable_Uni_Consent <- CrossTable(allDataUnisDF$University, allDataUnisDF$Give_consent, expected = TRUE, prop.t=TRUE, prop.r=TRUE, prop.c=TRUE)
 
 contingencyAccess_Usage <- xtabs(~allDataUnisDF$Worried_Access_Uni_Data + allDataUnisDF$Worried_Usage_Uni_Data, data = allDataUnisDF)
 xtabs(~allDataUnisDF$Worried_Access_Uni_Data + allDataUnisDF$Worried_Usage_Uni_Data, data = allDataUnisDF)
 crosstable_Access_Use <- CrossTable(allDataUnisDF$Worried_Access_Uni_Data, allDataUnisDF$Worried_Usage_Uni_Data, expected = TRUE, prop.t=TRUE, prop.r=TRUE, prop.c=TRUE)
 contingencyAccess_UsageDF <- as.data.frame.matrix(contingencyAccess_Usage)
-
-valuesDF <- data.frame(allDataDF$Ownership, allDataDF$Management, 
-                       allDataDF$Privact_Access, allDataDF$Privact_Control, 
-                       allDataDF$Bias, allDataDF$Trust, allDataDF$Autonomy, 
-                       allDataDF$Informed_Consent)
 
 worriedDC <- data.frame(allDataDF$Worried_DC, allDataDF$Worried_Access_Uni_Data, allDataDF$Worried_Usage_Uni_Data)
 worriedDC <- renameColumns(worriedDC, colHeadingsWorried)
@@ -133,9 +134,16 @@ colHeadings = c("Ownership","Management", "Privacy_Access", "Privacy_Control",
                 "Bias", "Trust", "Autonomy", "Informed_Consent")
 colHeadingsWorried = c("Worried_DC", "Worried_Access_Uni_Data", "Worried_Usage_Uni_Data")
 
+
+valuesDF <- data.frame(allDataDF$Ownership, allDataDF$Management, 
+                       allDataDF$Privact_Access, allDataDF$Privact_Control, 
+                       allDataDF$Bias, allDataDF$Trust, allDataDF$Autonomy, 
+                       allDataDF$Informed_Consent)
+
 valuesDF <- renameColumns(valuesDF, colHeadings)
 valuesDF <- fixMissingValues(valuesDF, "5")
 valuesDF <- convertScaleToInt(valuesDF)
+
 print(valuesDF)
 
 # valuesDFRemoved <- removeValues(valuesDF, "removed")
@@ -145,9 +153,12 @@ print(valuesDF)
 
 likertValuesDF <- convertToLikert(valuesDF, c("1", "2", "3", "4", "5"))
 
+likertValuesDF <- stripRowsByValue(likertValuesDF, "5")
+
 # test <- dataframe[dataframe[,heading] < 5, ]
 #           
-# likertValuesDF <- stripRowsByValue(likertValuesDF, 5)
+
+print(likertValuesDF)
 # 
 likertValuesDF <- likert(likertValuesDF)
 
@@ -156,6 +167,7 @@ likertValuesDF <- likert(likertValuesDF)
 # summary(result)
 
 plot(likertValuesDF)
+
 
 # allDataDF$Worried_DC
 # table(allDataDF$Worried_DC, allDataDF$Worried_Access_Uni_Data)
